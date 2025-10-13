@@ -1,0 +1,55 @@
+import math
+import random
+
+# 🎯 Example cost function: f(x) = x^2 + 10*sin(x)
+def cost_function(x):
+    return x**2 + 10 * math.sin(x)
+
+# 🔥 Simulated Annealing algorithm
+def simulated_annealing(cost_func, x_start, T_start, T_end, alpha, iterations):
+    current_x = x_start
+    current_cost = cost_func(current_x)
+    T = T_start
+    
+    best_x = current_x
+    best_cost = current_cost
+    
+    while T > T_end:
+        for _ in range(iterations):
+            # Generate a random neighbor
+            new_x = current_x + random.uniform(-1, 1)
+            new_cost = cost_func(new_x)
+            
+            # Change in cost
+            delta_E = new_cost - current_cost
+            
+            # Decide whether to accept
+            if delta_E < 0 or random.random() < math.exp(-delta_E / T):
+                current_x, current_cost = new_x, new_cost
+                
+                # Update best found
+                if new_cost < best_cost:
+                    best_x, best_cost = new_x, new_cost
+        
+        # Gradually cool down
+        T = T * alpha
+    
+    return best_x, best_cost
+
+# 🚀 Run the algorithm
+best_x, best_cost = simulated_annealing(
+    cost_func=cost_function,
+    x_start=random.uniform(-10, 10),
+    T_start=1000,
+    T_end=1e-3,
+    alpha=0.95,
+    iterations=100
+)
+
+print("🔥 Best solution found:")
+print(f"x = {best_x:.4f}, cost = {best_cost:.4f}")
+
+
+
+🔥 Best solution found:
+x = -1.3064, cost = -7.9458
